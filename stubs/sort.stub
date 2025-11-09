@@ -1,0 +1,10 @@
+<?php
+
+namespace {{namespace}};
+
+use Altrntv\EloquentFilter\Filters\EloquentSort;
+
+class {{class}} extends EloquentSort
+{
+
+}

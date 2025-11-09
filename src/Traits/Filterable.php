@@ -65,6 +65,6 @@ trait Filterable
 
     private function eloquentFilterName(): string
     {
-        return ConfigHelper::namespace() . class_basename(self::class) . 'Filter';
+        return ConfigHelper::filterNamespace() . class_basename(self::class) . 'Filter';
     }
 }

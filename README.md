@@ -1,28 +1,28 @@
 # Eloquent Filter
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/altrntv/eloquent-filter.svg?style=flat-square)](https://packagist.org/packages/altrntv/eloquent-filter)
+[![Latest Version](https://img.shields.io/github/release/altrntv/eloquent-filter.svg?style=flat-square)](https://github.com/altrntv/eloquent-filter/releases)
 [![Total Downloads](https://img.shields.io/packagist/dt/altrntv/eloquent-filter.svg?style=flat-square)](https://packagist.org/packages/altrntv/eloquent-filter)
 
 Eloquent Filter provides a clean and expressive way to apply dynamic, request-driven filters to your Eloquent models.
 It automatically maps incoming request parameters to filter methods, making complex query filtering simple and maintainable.
 
----
-
 ## Table of Contents
 
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Basic Usage](#basic-usage)
-  - [Creating a Filter](#creating-a-filter)
+- [Basic Usage Filters](#basic-usage-filters)
+  - [Creating a Filter](#creating-a-filter-class)
   - [Controller Example](#controller-example)
   - [Validating Filters](#validating-filters)
   - [Casting Filter Values](#casting-filter-values)
   - [Joining Parameters](#joining-parameters)
+- [Basic Usage Sorts](#basic-usage-sorts)
+  - [Creating a Sort Class](#creating-a-sort-class)
+  - [Request Example](#request-example)
+  - [Applying Sort](#applying-sort)
 - [Contributing](#contributing)
 - [Credits](#credits)
 - [License](#license)
-
----
 
 ## Requirements
 
@@ -30,8 +30,6 @@ This package requires:
 
 * PHP ^8.2
 * Laravel ^12.0
-
----
 
 ## Installation
 
@@ -41,9 +39,7 @@ Install the package via Composer:
 composer require altrntv/eloquent-filter
 ```
 
----
-
-## Basic Usage
+## Basic Usage Filters
 
 Extend your model with the `Filterable` trait:
 
@@ -69,7 +65,7 @@ After adding the trait, your model gains two new query builder methods:
 
 ---
 
-### Creating a Filter
+### Creating a Filter Class
 
 You can create a filter class using the Artisan command:
 
@@ -81,10 +77,6 @@ Then, define methods corresponding to each filterable parameter.
 Each method should accept a value and modify the query builder accordingly.
 
 ```php
-<?php
-
-namespace App\Filters;
-
 use Altrntv\EloquentFilter\Filters\EloquentFilter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -109,10 +101,6 @@ class UserFilter extends EloquentFilter
 ### Controller Example
 
 ```php
-<?php
-
-namespace App\Http\Controllers;
-
 use App\Models\User;
 use App\Http\Requests\UserIndexRequest;
 use Illuminate\Http\JsonResponse;
@@ -137,10 +125,6 @@ final class UserController extends Controller
 It’s recommended to validate incoming filter parameters in your request class:
 
 ```php
-<?php
-
-namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserIndexRequest extends FormRequest
@@ -165,10 +149,6 @@ Eloquent Filter supports the following cast types:
 To cast a value, define it in the $casts property of your filter:
 
 ```php
-<?php
-
-namespace App\Filters;
-
 use Altrntv\EloquentFilter\Filters\EloquentFilter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -187,7 +167,8 @@ class UserFilter extends EloquentFilter
 
     public function roles(array $value): Builder
     {
-        return $this->builder->whereIn('roles', $value);
+        return $this->builder
+            ->whereIn('roles', $value);
     }
 }
 ```
@@ -195,10 +176,6 @@ class UserFilter extends EloquentFilter
 And in your form request:
 
 ```php
-<?php
-
-namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserIndexRequest extends FormRequest
@@ -237,10 +214,6 @@ All keys inside the group are:
 #### Example Filter Class
 
 ```php
-<?php
-
-namespace App\Filters;
-
 use Altrntv\EloquentFilter\Filters\EloquentFilter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -281,7 +254,94 @@ $this->parameters = [
 
 _This approach is especially useful for handling ranges or multipart filters, keeping your request parameters clean and your filter methods readable._
 
+## Basic Usage Sorts
+
+Eloquent Filter now supports sorting via the `Sortable` trait and `EloquentSort` classes.
+This allows you to apply dynamic sorting based on HTTP requests or string parameters.
+
+Extend your model with the `Sortable` trait:
+
+```php
+use Altrntv\EloquentFilter\Traits\Sortable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+/**
+ * @method static Builder<static>|self sort(string $parameters)
+ * @method static Builder<static>|self sortByRequest()
+ */
+class User extends Authenticatable
+{
+    use Sortable;
+}
+```
+
+After adding the trait, your model gains two query builder methods:
+
+* `sort(string $parameters)` — Apply sorting using a comma-separated string of columns.
+* `sortByRequest()` — Automatically applies sorting from the current HTTP request, using the key defined in your configuration.
+
 ---
+
+### Creating a Sort Class
+
+You can create a sort class using the Artisan command:
+
+```
+php artisan make:eloquent-sort UserSort
+```
+
+```php
+use Altrntv\EloquentFilter\Filters\EloquentSort;
+use Illuminate\Database\Eloquent\Builder;
+
+class UserSort extends EloquentSort
+{
+    public function name(string $direction): Builder
+    {
+        return $this->builder
+            ->orderBy('name', $direction);
+    }
+
+    public function age(string $direction): Builder
+    {
+        return $this->builder
+            ->orderBy('age', $direction);
+    }
+}
+```
+
+---
+
+### Request Example
+
+```
+GET /users?sort_by=name,-age
+```
+
+* `name` — ascending
+* `-age` — descending
+
+The sort string is split by the configured separator (`,` by default), and the direction is inferred from the `-` prefix.
+
+---
+
+### Applying Sort
+
+In controller:
+```php
+$users = User::query()
+    ->sortByRequest()
+    ->get();
+```
+
+Or using a manual string:
+
+```php
+$users = User::query()
+    ->sort('name,-age')
+    ->get();
+```
 
 ## Contributing
 
@@ -289,14 +349,10 @@ Contributions are welcome!
 If you’d like to improve this package, please fork the repository and open a pull request.
 Bug fixes, new features, and documentation improvements are all appreciated.
 
----
-
 ## Credits
 
 - [Pavel Dykin](https://github.com/altrntv)
 - [All Contributors](../../contributors)
-
----
 
 ## License
 

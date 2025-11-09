@@ -7,20 +7,20 @@ use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'make:eloquent-filter', aliases: [
-    'eloquent:filter',
+#[AsCommand(name: 'make:eloquent-sort', aliases: [
+    'eloquent:sort',
 ])]
-class EloquentFilterMakeCommand extends GeneratorCommand
+class EloquentSortMakeCommand extends GeneratorCommand
 {
-    protected $name = 'make:eloquent-filter';
+    protected $name = 'make:eloquent-sort';
 
-    protected $description = 'Create a new Eloquent Filter';
+    protected $description = 'Create a new Eloquent Sort';
 
-    protected $type = 'Eloquent Filter';
+    protected $type = 'Eloquent Sort';
 
     /** @var string[] */
     protected $aliases = [
-        'eloquent:filter',
+        'eloquent:sort',
     ];
 
     protected function getNameInput(): string
@@ -31,8 +31,8 @@ class EloquentFilterMakeCommand extends GeneratorCommand
             $name = Str::substr($name, 0, -4);
         }
 
-        if (Str::doesntEndWith($name, 'Filter')) {
-            $name .= 'Filter';
+        if (Str::doesntEndWith($name, 'Sort')) {
+            $name .= 'Sort';
         }
 
         return Str::pascal($name);
@@ -40,21 +40,21 @@ class EloquentFilterMakeCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace): string
     {
-        return trim(ConfigHelper::filterNamespace(), '\\');
+        return trim(ConfigHelper::sortNamespace(), '\\');
     }
 
     protected function promptForMissingArgumentsUsing(): array
     {
         return [
             'name' => [
-                'What should the eloquent filter be named?',
-                'E.g. PostFilter',
+                'What should the eloquent sort be named?',
+                'E.g. PostSort',
             ],
         ];
     }
 
     protected function getStub(): string
     {
-        return __DIR__ . '/../../stubs/filter.stub';
+        return __DIR__ . '/../../stubs/sort.stub';
     }
 }

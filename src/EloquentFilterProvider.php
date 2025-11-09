@@ -3,6 +3,7 @@
 namespace Altrntv\EloquentFilter;
 
 use Altrntv\EloquentFilter\Commands\EloquentFilterMakeCommand;
+use Altrntv\EloquentFilter\Commands\EloquentSortMakeCommand;
 use Illuminate\Support\ServiceProvider;
 
 class EloquentFilterProvider extends ServiceProvider
@@ -13,7 +14,10 @@ class EloquentFilterProvider extends ServiceProvider
 
         $this->mergeConfig();
 
-        $this->commands([EloquentFilterMakeCommand::class]);
+        $this->commands([
+            EloquentFilterMakeCommand::class,
+            EloquentSortMakeCommand::class,
+        ]);
     }
 
     private function configurePaths(): void
