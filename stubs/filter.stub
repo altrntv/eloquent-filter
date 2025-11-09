@@ -1,0 +1,10 @@
+<?php
+
+namespace {{namespace}};
+
+use Altrntv\EloquentFilter\Filters\EloquentFilter;
+
+class {{class}} extends EloquentFilter
+{
+
+}

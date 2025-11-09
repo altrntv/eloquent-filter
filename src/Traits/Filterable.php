@@ -2,6 +2,7 @@
 
 namespace Altrntv\EloquentFilter\Traits;
 
+use Altrntv\EloquentFilter\Config\ConfigHelper;
 use Altrntv\EloquentFilter\Filters\EloquentFilter;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -48,9 +49,7 @@ trait Filterable
         /** @var Request $request */
         $request = Container::getInstance()->make(Request::class);
 
-        /** @var string $key */
-        $key = config('eloquent-filter.request_filter_key');
-        $parameters = $request->array($key);
+        $parameters = $request->array(ConfigHelper::requestFilterKey());
 
         $class = $this->eloquentFilterName();
 
@@ -66,9 +65,6 @@ trait Filterable
 
     private function eloquentFilterName(): string
     {
-        /** @var string $namespace */
-        $namespace = config('eloquent-filter.namespace');
-
-        return $namespace . class_basename(self::class) . 'Filter';
+        return ConfigHelper::namespace() . class_basename(self::class) . 'Filter';
     }
 }

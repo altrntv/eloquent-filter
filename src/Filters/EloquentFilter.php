@@ -2,6 +2,7 @@
 
 namespace Altrntv\EloquentFilter\Filters;
 
+use Altrntv\EloquentFilter\Config\ConfigHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -106,9 +107,6 @@ abstract class EloquentFilter
             );
         }
 
-        /** @var string $separator */
-        $separator = config('eloquent-filter.array_value_separator');
-
-        return array_filter(explode($separator, $value));
+        return array_filter(explode(ConfigHelper::arrayValueSeparator(), $value));
     }
 }
