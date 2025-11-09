@@ -23,11 +23,17 @@ abstract class EloquentFilter
     protected array $casts = [];
 
     /**
+     * @var array<string, string[]>
+     */
+    protected array $joinParameters = [];
+
+    /**
      * @param array<string, mixed> $parameters
      */
     public function __construct(protected array $parameters = [])
     {
         $this->initializeParameters();
+        $this->initializeJoinParameters();
     }
 
     /**
@@ -41,6 +47,12 @@ abstract class EloquentFilter
 
         foreach ($this->parameters as $key => $value) {
             $method = Str::camel($key);
+
+            if (array_key_exists($key, $this->joinParameters)) {
+                $this->{$method}(...$value);
+
+                continue;
+            }
 
             if (method_exists($this, $method)) {
                 $this->{$method}($value);
@@ -62,6 +74,23 @@ abstract class EloquentFilter
     {
         foreach ($this->parameters as $key => $value) {
             $this->parameters[$key] = $this->castAttribute($key, $value);
+        }
+    }
+
+    protected function initializeJoinParameters(): void
+    {
+        foreach ($this->joinParameters as $key => $value) {
+            $values = Arr::only($this->parameters, $value);
+
+            if (empty($values)) {
+                continue;
+            }
+
+            Arr::forget($this->parameters, array_keys($values));
+
+            $this->parameters[$key] = Arr::mapWithKeys($values, static function (mixed $value, string $key) {
+                return [Str::camel($key) => $value];
+            });
         }
     }
 
