@@ -1,0 +1,41 @@
+{
+    "name": "altrntv/eloquent-filter",
+    "description": "Eloquent Filter for Laravel Models.",
+    "keywords": [
+        "laravel",
+        "laravel tools",
+        "eloquent",
+        "eloquent filter",
+        "laravel query filter",
+        "laravel filter",
+        "filter"
+    ],
+    "homepage": "https://github.com/altrntv/eloquent-filter",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pavel Dykin",
+            "email": "sssecularization@gmail.com",
+            "homepage": "https://github.com/altrntv"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Altrntv\\EloquentFilter\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Altrntv\\EloquentFilter\\EloquentFilterProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
