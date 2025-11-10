@@ -24,9 +24,21 @@
         "php": "^8.2",
         "laravel/framework": "^12.0"
     },
+    "require-dev": {
+        "laravel/pint": "^1.25",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "orchestra/testbench": "^10.6"
+    },
     "autoload": {
         "psr-4": {
             "Altrntv\\EloquentFilter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests",
+            "Tests\\Database\\Factories\\": "tests/database/factories"
         }
     },
     "extra": {
@@ -35,6 +47,15 @@
                 "Altrntv\\EloquentFilter\\EloquentFilterProvider"
             ]
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "pint": "vendor/bin/pint"
     },
     "minimum-stability": "stable",
     "prefer-stable": true

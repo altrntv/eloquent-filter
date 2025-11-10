@@ -35,7 +35,7 @@ This package requires:
 
 Install the package via Composer:
 
-```
+```bash
 composer require altrntv/eloquent-filter
 ```
 
@@ -69,7 +69,7 @@ After adding the trait, your model gains two new query builder methods:
 
 You can create a filter class using the Artisan command:
 
-```
+```bash
 php artisan make:eloquent-filter UserFilter
 ```
 
@@ -287,7 +287,7 @@ After adding the trait, your model gains two query builder methods:
 
 You can create a sort class using the Artisan command:
 
-```
+```bash
 php artisan make:eloquent-sort UserSort
 ```
 
@@ -341,6 +341,12 @@ Or using a manual string:
 $users = User::query()
     ->sort('name,-age')
     ->get();
+```
+
+## Testing
+
+```bash
+composer test
 ```
 
 ## Contributing
