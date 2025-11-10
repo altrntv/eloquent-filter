@@ -20,6 +20,7 @@ It automatically maps incoming request parameters to filter methods, making comp
   - [Creating a Sort Class](#creating-a-sort-class)
   - [Request Example](#request-example)
   - [Applying Sort](#applying-sort)
+- [Testing](#testing)
 - [Contributing](#contributing)
 - [Credits](#credits)
 - [License](#license)
@@ -28,7 +29,7 @@ It automatically maps incoming request parameters to filter methods, making comp
 
 This package requires:
 
-* PHP ^8.2
+* PHP ^8.3
 * Laravel ^12.0
 
 ## Installation
