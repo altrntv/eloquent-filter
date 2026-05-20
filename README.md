@@ -31,7 +31,7 @@ It automatically maps incoming request parameters to filter methods, making comp
 This package requires:
 
 * PHP ^8.3
-* Laravel ^12.0
+* Laravel ^13.0
 
 ## Installation
 
