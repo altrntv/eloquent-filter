@@ -6,6 +6,7 @@ use Altrntv\EloquentFilter\EloquentFilterProvider;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -63,6 +64,11 @@ class TestCase extends \Orchestra\Testbench\TestCase
         });
     }
 
+    /**
+     * @param Application $app
+     *
+     * @return array<int, class-string>
+     */
     protected function getPackageProviders($app): array
     {
         return [
@@ -70,7 +76,12 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ];
     }
 
-    protected function getEnvironmentSetUp($app): void
+    /**
+     * @param Application $app
+     *
+     * @return void
+     */
+    protected function defineEnvironment($app): void
     {
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [

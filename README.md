@@ -1,7 +1,8 @@
 # Eloquent Filter
 
-[![Latest Version](https://img.shields.io/github/release/altrntv/eloquent-filter.svg?style=flat-square)](https://github.com/altrntv/eloquent-filter/releases)
-[![Total Downloads](https://img.shields.io/packagist/dt/altrntv/eloquent-filter.svg?style=flat-square)](https://packagist.org/packages/altrntv/eloquent-filter)
+![Packagist Version](https://img.shields.io/packagist/v/altrntv/eloquent-filter?style=flat-square&label=release)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/altrntv/eloquent-filter/test.yml?branch=main&style=flat-square&label=test)
+![Packagist Downloads](https://img.shields.io/packagist/dt/altrntv/eloquent-filter?style=flat-square)
 
 Eloquent Filter provides a clean and expressive way to apply dynamic, request-driven filters to your Eloquent models.
 It automatically maps incoming request parameters to filter methods, making complex query filtering simple and maintainable.
@@ -231,7 +232,7 @@ class UserFilter extends EloquentFilter
                 $query
                     ->whereDate('vip_from', '<=', $vipAtTo)
                     ->whereDate('vip_to', '>=', $vipAtFrom);
-            });;
+            });
     }
 }
 ```
