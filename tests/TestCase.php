@@ -71,38 +71,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected function defineEnvironment($app): void
     {
-        $driver = env('DB_DRIVER', 'sqlite');
-
-        $app['config']->set('database.default', $driver);
-
-        $app['config']->set('database.connections.sqlite', [
+        $app['config']->set('database.default', 'testbench');
+        $app['config']->set('database.connections.testbench', [
             'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix' => '',
-        ]);
-
-        $app['config']->set('database.connections.pgsql', [
-            'driver' => 'pgsql',
-            'host' => env('PG_HOST', 'pgsql'),
-            'port' => 5432,
-            'database' => env('PG_DATABASE', 'tracing_test'),
-            'username' => env('PG_USERNAME', 'tracing'),
-            'password' => env('PG_PASSWORD', 'secret'),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'search_path' => 'public',
-            'sslmode' => 'prefer',
-        ]);
-
-        $app['config']->set('database.connections.mysql', [
-            'driver' => 'mysql',
-            'host' => env('MYSQL_HOST', 'mysql'),
-            'port' => 3306,
-            'database' => env('MYSQL_DATABASE', 'tracing_test'),
-            'username' => env('MYSQL_USERNAME', 'tracing'),
-            'password' => env('MYSQL_PASSWORD', 'secret'),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
         ]);
 
