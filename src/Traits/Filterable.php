@@ -20,31 +20,27 @@ trait Filterable
     /**
      * @param Builder<TModel> $builder
      * @param array<string, mixed> $parameters
-     *
-     * @return Builder<TModel>
      */
-    protected function scopeFilter(Builder $builder, array $parameters = []): Builder
+    public function scopeFilter(Builder $builder, array $parameters = []): void
     {
         $class = $this->eloquentFilterName();
 
         if (!class_exists($class)) {
-            return $builder;
+            return;
         }
 
         /** @var EloquentFilter<TModel> $filter */
-        $filter = new $class($parameters);
+        $filter = app()->make($class);
 
-        return $filter->apply($builder);
+        $filter($builder, $parameters);
     }
 
     /**
      * @param Builder<TModel> $builder
      *
-     * @return Builder<TModel>
-     *
      * @throws BindingResolutionException
      */
-    protected function scopeFilterByRequest(Builder $builder): Builder
+    public function scopeFilterByRequest(Builder $builder): void
     {
         /** @var Request $request */
         $request = Container::getInstance()->make(Request::class);
@@ -54,17 +50,17 @@ trait Filterable
         $class = $this->eloquentFilterName();
 
         if (!class_exists($class)) {
-            return $builder;
+            return;
         }
 
         /** @var EloquentFilter<TModel> $filter */
-        $filter = new $class($parameters);
+        $filter = app()->make($class);
 
-        return $filter->apply($builder);
+        $filter($builder, $parameters);
     }
 
     private function eloquentFilterName(): string
     {
-        return ConfigHelper::filterNamespace() . class_basename(self::class) . 'Filter';
+        return ConfigHelper::filterNamespace() . class_basename(static::class) . 'Filter';
     }
 }

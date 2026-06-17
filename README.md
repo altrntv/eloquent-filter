@@ -294,8 +294,7 @@ php artisan make:eloquent-sort UserSort
 ```
 
 ```php
-use Altrntv\EloquentFilter\Filters\EloquentSort;
-use Illuminate\Database\Eloquent\Builder;
+use Altrntv\EloquentFilter\Sorts\EloquentSort;use Illuminate\Database\Eloquent\Builder;
 
 class UserSort extends EloquentSort
 {

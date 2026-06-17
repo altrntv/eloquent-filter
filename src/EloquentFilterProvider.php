@@ -24,7 +24,7 @@ class EloquentFilterProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../config/eloquent-filter.php' => config_path('eloquent-filter.php'),
-        ]);
+        ], 'eloquent-filter-config');
     }
 
     private function mergeConfig(): void

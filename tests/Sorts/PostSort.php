@@ -2,14 +2,12 @@
 
 namespace Tests\Sorts;
 
-use Altrntv\EloquentFilter\Filters\EloquentSort;
-use Illuminate\Database\Eloquent\Builder;
+use Altrntv\EloquentFilter\Sorts\EloquentSort;
 
 class PostSort extends EloquentSort
 {
-    public function publishedAt(string $direction): Builder
+    public function publishedAt(string $direction): void
     {
-        return $this->builder
-            ->orderBy('published_at', $direction);
+        $this->builder->orderBy('published_at', $direction);
     }
 }

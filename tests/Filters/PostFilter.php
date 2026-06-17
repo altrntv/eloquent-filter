@@ -3,7 +3,6 @@
 namespace Tests\Filters;
 
 use Altrntv\EloquentFilter\Filters\EloquentFilter;
-use Illuminate\Database\Eloquent\Builder;
 
 class PostFilter extends EloquentFilter
 {
@@ -11,16 +10,13 @@ class PostFilter extends EloquentFilter
         'tag' => 'array',
     ];
 
-    public function tag(array $value): Builder
+    public function tag(array $value): void
     {
-
-        return $this->builder
-            ->whereIn('tag', $value);
+        $this->builder->whereIn('tag', $value);
     }
 
-    public function publishedAt(string $value): Builder
+    public function publishedAt(string $value): void
     {
-        return $this->builder
-            ->whereDate('published_at', $value);
+        $this->builder->whereDate('published_at', $value);
     }
 }

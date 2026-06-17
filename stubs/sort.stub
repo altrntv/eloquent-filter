@@ -2,7 +2,7 @@
 
 namespace {{namespace}};
 
-use Altrntv\EloquentFilter\Filters\EloquentSort;
+use Altrntv\EloquentFilter\Sorts\EloquentSort;
 
 class {{class}} extends EloquentSort
 {

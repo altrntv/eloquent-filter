@@ -3,7 +3,7 @@
 namespace Altrntv\EloquentFilter\Traits;
 
 use Altrntv\EloquentFilter\Config\ConfigHelper;
-use Altrntv\EloquentFilter\Filters\EloquentSort;
+use Altrntv\EloquentFilter\Sorts\EloquentSort;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,31 +19,27 @@ trait Sortable
 {
     /**
      * @param Builder<TModel> $builder
-     *
-     * @return Builder<TModel>
      */
-    public function scopeSort(Builder $builder, string $parameters): Builder
+    public function scopeSort(Builder $builder, string $parameters): void
     {
         $class = $this->eloquentSortName();
 
         if (!class_exists($class)) {
-            return $builder;
+            return;
         }
 
         /** @var EloquentSort<TModel> $sort */
-        $sort = new $class($parameters);
+        $sort = app()->make($class);
 
-        return $sort->apply($builder);
+        $sort($builder, $parameters);
     }
 
     /**
      * @param Builder<TModel> $builder
      *
-     * @return Builder<TModel>
-     *
      * @throws BindingResolutionException
      */
-    public function scopeSortByRequest(Builder $builder): Builder
+    public function scopeSortByRequest(Builder $builder): void
     {
         /** @var Request $request */
         $request = Container::getInstance()->make(Request::class);
@@ -53,23 +49,23 @@ trait Sortable
             : null;
 
         if (is_null($parameters)) {
-            return $builder;
+            return;
         }
 
         $class = $this->eloquentSortName();
 
         if (!class_exists($class)) {
-            return $builder;
+            return;
         }
 
         /** @var EloquentSort<TModel> $sort */
-        $sort = new $class($parameters);
+        $sort = app()->make($class);
 
-        return $sort->apply($builder);
+        $sort($builder, (string) $parameters);
     }
 
     private function eloquentSortName(): string
     {
-        return ConfigHelper::sortNamespace() . class_basename(self::class) . 'Sort';
+        return ConfigHelper::sortNamespace() . class_basename(static::class) . 'Sort';
     }
 }

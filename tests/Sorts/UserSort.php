@@ -2,20 +2,17 @@
 
 namespace Tests\Sorts;
 
-use Altrntv\EloquentFilter\Filters\EloquentSort;
-use Illuminate\Database\Eloquent\Builder;
+use Altrntv\EloquentFilter\Sorts\EloquentSort;
 
 class UserSort extends EloquentSort
 {
-    public function name(string $direction): Builder
+    public function name(string $direction): void
     {
-        return $this->builder
-            ->orderBy('name', $direction);
+        $this->builder->orderBy('name', $direction);
     }
 
-    public function age(string $direction): Builder
+    public function age(string $direction): void
     {
-        return $this->builder
-            ->orderBy('age', $direction);
+        $this->builder->orderBy('age', $direction);
     }
 }

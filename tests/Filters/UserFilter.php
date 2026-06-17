@@ -3,7 +3,6 @@
 namespace Tests\Filters;
 
 use Altrntv\EloquentFilter\Filters\EloquentFilter;
-use Illuminate\Database\Eloquent\Builder;
 
 class UserFilter extends EloquentFilter
 {
@@ -15,15 +14,13 @@ class UserFilter extends EloquentFilter
         'age' => ['age_from', 'age_to'],
     ];
 
-    public function role(array $value): Builder
+    public function role(array $value): void
     {
-        return $this->builder
-            ->whereIn('role', $value);
+        $this->builder->whereIn('role', $value);
     }
 
-    public function age(string $ageFrom, string $ageTo): Builder
+    public function age(int|string $ageFrom, int|string $ageTo): void
     {
-        return $this->builder
-            ->whereBetween('age', [$ageFrom, $ageTo]);
+        $this->builder->whereBetween('age', [$ageFrom, $ageTo]);
     }
 }

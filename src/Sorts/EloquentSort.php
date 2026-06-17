@@ -1,20 +1,23 @@
 <?php
 
-namespace Altrntv\EloquentFilter\Filters;
+namespace Altrntv\EloquentFilter\Sorts;
 
 use Altrntv\EloquentFilter\Config\ConfigHelper;
+use Altrntv\EloquentFilter\Contracts\Sort;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
  * @template TModel of Model
+ *
+ * @implements Sort<TModel>
  */
-abstract class EloquentSort
+abstract class EloquentSort implements Sort
 {
-    private const string ASC_DIRECTION = 'asc';
+    protected const string ASC_DIRECTION = 'asc';
 
-    private const string DESC_DIRECTION = 'desc';
+    protected const string DESC_DIRECTION = 'desc';
 
     /** @var Builder<TModel> */
     protected Builder $builder;
@@ -24,19 +27,17 @@ abstract class EloquentSort
      */
     protected array $columns = [];
 
-    public function __construct(protected string $parameters)
-    {
-        $this->initializeParameters();
-    }
+    protected string $parameters;
 
     /**
      * @param Builder<TModel> $builder
-     *
-     * @return Builder<TModel>
      */
-    public function apply(Builder $builder): Builder
+    public function __invoke(Builder $builder, string $parameters): void
     {
         $this->builder = $builder;
+        $this->parameters = $parameters;
+
+        $this->initializeParameters();
 
         foreach ($this->columns as $column => $direction) {
             $method = Str::camel($column);
@@ -45,8 +46,6 @@ abstract class EloquentSort
                 $this->{$method}($direction);
             }
         }
-
-        return $this->builder;
     }
 
     protected function initializeParameters(): void

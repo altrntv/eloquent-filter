@@ -3,7 +3,6 @@
 namespace Tests;
 
 use Altrntv\EloquentFilter\EloquentFilterProvider;
-use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
@@ -18,52 +17,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
     use LazilyRefreshDatabase;
     use WithFaker;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $manager = new Manager;
-
-        $manager->addConnection([
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'username' => 'root',
-            'password' => '',
-        ]);
-
-        $manager->setAsGlobal();
-        $manager->bootEloquent();
-
-        Manager::schema()->create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->unsignedSmallInteger('role');
-            $table->unsignedSmallInteger('age');
-            $table->timestamps();
-        });
-
-        Manager::schema()->create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('tag');
-            $table->timestamp('published_at');
-            $table->timestamps();
-        });
-
-        Factory::guessFactoryNamesUsing(function (string $modelName): string {
-            return 'Tests\\Database\\Factories\\' . Str::afterLast($modelName, '\\') . 'Factory';
-        });
-
-        Factory::guessModelNamesUsing(function (Factory $factory): string {
-            return 'Tests\\Models\\' . Str::replaceLast(
-                'Factory',
-                '',
-                Str::afterLast($factory::class, '\\')
-            );
-        });
-    }
-
     /**
      * @param Application $app
      *
@@ -76,17 +29,80 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ];
     }
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $schema = $this->app['db']->getSchemaBuilder();
+
+        $schema->create('users', function (Blueprint $table): void {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->unsignedSmallInteger('role');
+            $table->unsignedSmallInteger('age');
+            $table->timestamps();
+        });
+
+        $schema->create('posts', function (Blueprint $table): void {
+            $table->id();
+            $table->string('title');
+            $table->string('tag');
+            $table->timestamp('published_at');
+            $table->timestamps();
+        });
+
+        Factory::guessFactoryNamesUsing(function (string $modelName): string {
+            return 'Tests\\Database\\Factories\\' . Str::afterLast($modelName, '\\') . 'Factory';
+        });
+
+        Factory::guessModelNamesUsing(function (Factory $factory): string {
+            return 'Tests\\Models\\'
+                . Str::replaceLast(
+                    'Factory',
+                    '',
+                    Str::afterLast($factory::class, '\\')
+                );
+        });
+    }
+
     /**
      * @param Application $app
-     *
-     * @return void
      */
     protected function defineEnvironment($app): void
     {
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
+        $driver = env('DB_DRIVER', 'sqlite');
+
+        $app['config']->set('database.default', $driver);
+
+        $app['config']->set('database.connections.sqlite', [
             'driver' => 'sqlite',
             'database' => ':memory:',
+            'prefix' => '',
+        ]);
+
+        $app['config']->set('database.connections.pgsql', [
+            'driver' => 'pgsql',
+            'host' => env('PG_HOST', 'pgsql'),
+            'port' => 5432,
+            'database' => env('PG_DATABASE', 'tracing_test'),
+            'username' => env('PG_USERNAME', 'tracing'),
+            'password' => env('PG_PASSWORD', 'secret'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ]);
+
+        $app['config']->set('database.connections.mysql', [
+            'driver' => 'mysql',
+            'host' => env('MYSQL_HOST', 'mysql'),
+            'port' => 3306,
+            'database' => env('MYSQL_DATABASE', 'tracing_test'),
+            'username' => env('MYSQL_USERNAME', 'tracing'),
+            'password' => env('MYSQL_PASSWORD', 'secret'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
         ]);
 
