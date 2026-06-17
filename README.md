@@ -31,7 +31,7 @@ It automatically maps incoming request parameters to filter methods, making comp
 This package requires:
 
 * PHP ^8.3
-* Laravel ^13.0
+* Laravel 11 / 12 / 13
 
 ## Installation
 
@@ -84,15 +84,15 @@ use Illuminate\Database\Eloquent\Builder;
 
 class UserFilter extends EloquentFilter
 {
-    public function name(string $value): Builder
+    public function name(string $value): void
     {
-        return $this->builder
+        $this->builder
             ->whereLike('name', "%{$value}%");
     }
 
-    public function age(string $value): Builder
+    public function age(string $value): void
     {
-        return $this->builder
+        $this->builder
             ->where('age', '>=', $value);
     }
 }
@@ -161,15 +161,15 @@ class UserFilter extends EloquentFilter
         'roles' => 'array',
     ];
 
-    public function age(int $value): Builder
+    public function age(int $value): void
     {
-        return $this->builder
+        $this->builder
             ->where('age', '>=', $value);
     }
 
-    public function roles(array $value): Builder
+    public function roles(array $value): void
     {
-        return $this->builder
+        $this->builder
             ->whereIn('roles', $value);
     }
 }
@@ -225,9 +225,9 @@ class UserFilter extends EloquentFilter
         'vip_at' => ['vip_at_from', 'vip_at_to'],
     ];
 
-    public function vipAt(string $vipAtFrom, string $vipAtTo): Builder
+    public function vipAt(string $vipAtFrom, string $vipAtTo): void
     {
-        return $this->builder
+        $this->builder
             ->where(function (Builder $query) use ($vipAtFrom, $vipAtTo) {
                 $query
                     ->whereDate('vip_from', '<=', $vipAtTo)
@@ -294,19 +294,20 @@ php artisan make:eloquent-sort UserSort
 ```
 
 ```php
-use Altrntv\EloquentFilter\Sorts\EloquentSort;use Illuminate\Database\Eloquent\Builder;
+use Altrntv\EloquentFilter\Sorts\EloquentSort;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserSort extends EloquentSort
 {
-    public function name(string $direction): Builder
+    public function name(string $direction): void
     {
-        return $this->builder
+        $this->builder
             ->orderBy('name', $direction);
     }
 
-    public function age(string $direction): Builder
+    public function age(string $direction): void
     {
-        return $this->builder
+        $this->builder
             ->orderBy('age', $direction);
     }
 }
